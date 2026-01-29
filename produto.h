@@ -13,8 +13,11 @@ Produto *adicionar_produto(Produto *lista, int codigo, char *nome, float preco, 
 
 void listar_produtos(Produto *lista);
 
+Produto *buscar_produto(Produto *lista, int codigo);
 
+Produto *remover_produto(Produto *lista, int codigo);
 
+void editar_produto(Produto *lista, int codigo_busca)
 
 
 #endif
