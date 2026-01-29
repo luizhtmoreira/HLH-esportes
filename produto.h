@@ -7,17 +7,17 @@ typedef struct Produto{
     float preco;
     int quantidade;
     struct Produto *prox; //cria um ponteiro do tipo 'Produto' pra apontar pro próximo da lista
-} Produto;
+} produto;
 
-Produto *adicionar_produto(Produto *lista, int codigo, char *nome, float preco, int quantidade);
+produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, int quantidade);
 
-void listar_produtos(Produto *lista);
+void listar_produtos(produto *lista);
 
-Produto *buscar_produto(Produto *lista, int codigo);
+produto *buscar_produto(produto *lista, int codigo);
 
-Produto *remover_produto(Produto *lista, int codigo);
+produto *remover_produto(produto *lista, int codigo);
 
-void editar_produto(Produto *lista, int codigo_busca)
+void editar_produto(produto *lista, int codigo_busca);
 
 
 #endif
