@@ -8,12 +8,24 @@ void menu_clientes(cliente **inicio){
     printf("função nao implementada");
 }
 
+
+cliente* criar_cliente(){
+    cliente *novo = (cliente*) malloc(sizeof(cliente));
+
+    if (novo == NULL){
+        printf("Memória insuficiente!\n");
+        return NULL;
+    }
+
+
+}
+
 void cadastrar_cliente(cliente **inicio){
-    printf("função nao implementada");
+
+
 }
 
 cliente* inicializar_lista_cliente(){
-    printf("função nao implementada");
     return NULL;
 }
 
