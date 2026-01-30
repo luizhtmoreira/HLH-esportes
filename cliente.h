@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 typedef struct Cliente{
-    char CPF[13];
+    char CPF[14];
     char nome[100];
     char email[100];
     char telefone[100];

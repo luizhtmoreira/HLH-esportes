@@ -6,28 +6,46 @@
 
 void menu_clientes(cliente **inicio){
     int opcao;
-    do{
+    do {
         printf("\n=== MENU CLIENTES ===\n");
         printf("1. Cadastrar Novo\n");
         printf("2. Listar Todos\n");
-        printf("0. Voltar ao Menu Principal\n");
-        printf("Escolha uma opcao: ");
+        printf("3. Buscar por CPF\n");
+        printf("4. Editar Cliente\n");
+        printf("5. Remover Cliente\n");
+        printf("0. Voltar\n");
+        printf("Escolha: ");
         scanf("%d", &opcao);
 
-        switch(opcao){
-            case 0:
-                printf("Voltando ao menu principal...\n");
-                break;
-            case 1:
+        switch(opcao) {
+            case 1: 
                 cadastrar_cliente(inicio);
                 break;
-            case 2:
+            case 2: 
                 listar_clientes(*inicio);
+                break;
+            case 3: 
+                {
+                    char cpf[14];
+                    printf("CPF: ");
+                    scanf(" %[^\n]", cpf);
+                    cliente *res = buscar_cliente(*inicio, cpf);
+                    if(res) printf("Encontrado: %s\n", res->nome);
+                    else printf("Nao encontrado.\n");
+                }
+                break;
+            case 4:
+                editar_cliente(*inicio);
+                break;
+            case 5:
+                remover_cliente(inicio);
+                break;
+            case 0:
                 break;
             default:
                 printf("Opcao invalida!\n");
         }
-    } while(opcao != 0);
+    } while (opcao != 0);
 }
 
 
@@ -111,14 +129,101 @@ void listar_clientes(cliente *inicio){
 }
 
 cliente* buscar_cliente(cliente *inicio, char *cpf_busca){
-    printf("função nao implementada");
+    cliente *atual = inicio;
+
+    while (atual != NULL){
+        if (strcmp(atual->CPF, cpf_busca) == 0){
+            return atual;
+        }
+        atual = atual->prox;
+    }
     return NULL;
 }
 
 void editar_cliente(cliente *inicio){
-    printf("função nao implementada");
+    char cpf_busca[14];
+    printf("\n--- EDITAR CADASTRO COMPLETO ---\n");
+    printf("Digite o CPF ATUAL do cliente para encontrar: ");
+    scanf(" %[^\n]", cpf_busca);
+
+    cliente *encontrado = buscar_cliente(inicio, cpf_busca);
+
+    if (encontrado == NULL){
+        printf("Nenhum cliente encontrado com o CPF %s.\n", cpf_busca);
+        return;
+    }
+
+    printf("\nEditando dados de: %s", encontrado->nome);
+    char r;
+
+    printf("\nDeseja editar o NOME ? (S/N): ");
+    scanf(" %c", &r);
+
+    if (r == 'S' || r == 's'){
+        printf("Novo Nome: ");
+        scanf(" %[^\n]", encontrado->nome); 
+    }
+
+    printf("\nDeseja editar o CPF? (S/N): ");
+    scanf(" %c", &r); 
+
+    if (r == 'S' || r == 's') {
+        printf("Novo CPF: ");
+        scanf(" %[^\n]", encontrado->CPF);
+    }
+
+    printf("\nDeseja editar o EMAIL? (S/N): ");
+    scanf(" %c", &r); 
+
+    if (r == 'S' || r == 's') {
+        printf("Novo Email: ");
+        scanf(" %[^\n]", encontrado->email);
+    }
+
+    printf("\nDeseja editar o TELEFONE? (S/N): ");
+    scanf(" %c", &r); 
+
+    if (r == 'S' || r == 's') {
+        printf("Novo Telefone: ");
+        scanf(" %[^\n]", encontrado->telefone);
+    }
+
+    printf("\nDeseja editar a DATA DE NASCIMENTO? (S/N): ");
+    scanf(" %c", &r); 
+
+    if (r == 'S' || r == 's') {
+        printf("Nova Data: ");
+        scanf(" %[^\n]", encontrado->data_de_nascimento);
+    }
+
+    printf("\n--- Edicao concluida! ---\n");
 }
 
 void remover_cliente(cliente **inicio){
-    printf("função nao implementada");
+    char cpf_deletado[14];
+    printf("\n--- REMOVER CLIENTE ---\n");
+    printf("Digite o CPF para remover: ");
+    scanf(" %[^\n]", cpf_deletado);
+
+    cliente *anterior = NULL;
+    cliente *atual = *inicio;
+
+    while (atual != NULL && strcmp(atual->CPF, cpf_deletado) != 0){
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    if(atual == NULL){
+        printf("\nCliente não encontrado.\n");
+        return;
+    }
+
+    if (anterior == NULL){ //alvo é o primeiro da lista
+        *inicio = atual->prox; //inicio agora é o 2do
+    } else { //alvo no meio ou fim
+        anterior->prox = atual->prox; //anterior aponta p prox;
+    }
+
+    free(atual);
+    printf("--- Cliente removido com sucesso ---");
 }
