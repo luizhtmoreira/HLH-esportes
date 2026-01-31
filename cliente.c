@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "cliente.h"
+#include "produto.h"
 
 void menu_clientes(cliente **inicio){
     int opcao;
@@ -199,6 +200,43 @@ void editar_cliente(cliente *inicio){
     printf("\n--- Edicao concluida! ---\n");
 }
 
+void ver_carrinho_cliente(cliente *c){
+    if (c->carrinho == NULL){
+        printf("\nCarrinho vazio.\n");
+        return;
+    }
+
+    printf("\n--- CARRINHO DE %s ---\n", c->nome);
+
+    produto *p = (produto*) c->carrinho;
+    float total = 0;
+
+    while (p != NULL){
+        float sub = p-> preco * p->quantidade;
+        printf("- %dx %s (R$ %.2f) = R$ %.2f\n", p->quantidade, p->nome, p->preco, sub);
+        total += sub;
+        p = p->prox;
+    }
+    printf("-------------------------\n");
+    printf("TOTAL: R$ %.2f\n", total);
+
+}
+
+void limpar_carrinho_cliente(cliente *c){
+    if (c->carrinho == NULL){
+        return;
+    }
+
+    produto *p = (produto*) c->carrinho;
+
+    while(p != NULL){
+        produto *temp = p;
+        p = p->prox;
+        free(temp);
+    }
+    c -> carrinho = NULL;
+}
+
 void remover_cliente(cliente **inicio){
     char cpf_deletado[14];
     printf("\n--- REMOVER CLIENTE ---\n");
@@ -224,6 +262,7 @@ void remover_cliente(cliente **inicio){
         anterior->prox = atual->prox; //anterior aponta p prox;
     }
 
+    limpar_carrinho_cliente(atual);
     free(atual);
     printf("--- Cliente removido com sucesso ---");
 }

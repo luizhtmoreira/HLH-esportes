@@ -30,9 +30,8 @@ cliente* buscar_cliente(cliente *inicio,                     char *cpf_busca);
 
 void editar_cliente(cliente *inicio);
 
+void ver_carrinho_cliente(cliente *c);
+
 void remover_cliente(cliente **inicio);
-
-
-
 
 #endif
