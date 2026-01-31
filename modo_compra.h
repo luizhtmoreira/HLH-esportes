@@ -4,6 +4,6 @@
 #include "produto.h"
 #include "cliente.h"
 
-void iniciar_modo_compra(produto *estoque);
+void iniciar_modo_compra(produto *estoque, cliente *comprador);
 
 #endif

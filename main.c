@@ -2,9 +2,13 @@
 #include <stdlib.h>
 
 #include "cliente.h"
+#include "produto.h"
+#include "modo_compra.h"
 
 int main(){
     cliente *lista_de_clientes = inicializar_lista_cliente();
+    produto * lista_de_produtos = NULL;
+    
     int opcao;
 
     do{
@@ -27,11 +31,64 @@ int main(){
                 break;
 
             case 2:
-                printf("\nem desenvolvimento...\n");
+                {
+                    int op_prod;
+                    do{
+                        printf("\n--- GESTAO DE ESTOQUE ---\n");
+                        printf("1. Cadastrar Produto\n");
+                        printf("2. Listar Estoque\n");
+                        printf("3. Editar Produto\n");
+                        printf("4. Remover Produto\n");
+                        printf("0. Voltar\n");
+                        printf("Escolha: ");
+                        scanf("%d", &op_prod);
+
+                        int cod, qtd;
+                        float preco;
+                        char nome[50];  
+
+                        switch(op_prod){
+                            case 1:
+                                printf("Codigo: "); scanf("%d", &cod);
+                                printf("Nome: "); scanf(" %[^\n]", nome);
+                                printf("Preco: "); scanf("%f", &preco);
+                                printf("Qtd Inicial: "); scanf("%d", &qtd);
+                                
+                                lista_de_produtos = adicionar_produto(lista_de_produtos, cod, nome, preco, qtd);
+                                printf("Produto cadastrado!\n");
+                                break;
+                            case 2:
+                                printf("\n--- Estoque Atual ---\n");
+                                listar_produtos(lista_de_produtos);
+                                break;
+                            case 3:
+                                printf("Codigo para editar: "); scanf("%d", &cod);
+                                editar_produto(lista_de_produtos, cod);
+                                break;
+                            case 4:
+                                printf("Codigo para remover: "); scanf("%d", &cod);
+                                lista_de_produtos = remover_produto(lista_de_produtos, cod);
+                                break;
+                        }                      
+                    }while (op_prod != 0);
+                }
                 break;
 
             case 3:
-                printf("\nem desenvolvimento...\n");
+                {
+                    char cpf_login[14];
+                    printf("\n--- LOGIN NO CAIXA ---\n");
+                    printf("Digite o CPF do cliente: ");
+                    scanf(" %[^\n]", cpf_login);
+
+                    cliente *cliente_atual = buscar_cliente(lista_de_clientes, cpf_login);
+
+                    if (cliente_atual == NULL) {
+                        printf("ERRO: Cliente nao encontrado. Cadastre-o no menu 1 antes de comprar.\n");
+                    } else {
+                        iniciar_modo_compra(lista_de_produtos, cliente_atual);
+                    }
+                }
                 break;
 
             default:

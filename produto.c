@@ -24,7 +24,7 @@ produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, 
 void listar_produtos(produto *lista){
     produto *p = lista;
     while(p != NULL){
-        printf("Codigo: %d | Nome: %s | Preço: R$ %.2f | Quantidade: %d", p->codigo, p->nome, p->preco, p->quantidade);
+        printf("Codigo: %d | Nome: %s | Preço: R$ %.2f | Quantidade: %d\n", p->codigo, p->nome, p->preco, p->quantidade);
 
         p = p->prox;
     }
