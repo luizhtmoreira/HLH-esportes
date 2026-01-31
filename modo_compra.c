@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "modo_compra.h"
 #include "produto.h"
+#include "cliente.h"
 
 float calcular_total_carrinho(produto *carrinho){
     float total = 0;
@@ -29,14 +30,15 @@ void devolver_estoque(produto *carrinho, produto *estoque_oficial){
         produto *produto_estoque = buscar_produto(estoque_oficial, p->codigo);
 
         if(produto_estoque != NULL) produto_estoque -> quantidade += p->quantidade;
+    
+        p = p->prox;
     }
 
-    p = p->prox;
 }
 
-void iniciar_modo_compra(produto *estoque){
+void iniciar_modo_compra(produto *estoque, cliente *comprador){
 
-    produto *carrinho = NULL; //inicia carrinho como uma lista vazia
+    produto *carrinho = (produto*) comprador->carrinho; //inicia carrinho como uma lista vazia
 
     int opcao = 0;
     int codigo_digitado;
@@ -48,7 +50,8 @@ void iniciar_modo_compra(produto *estoque){
         printf("2. Colocar Produto no Carrinho\n");
         printf("3. Ver Meu Carrinho\n");
         printf("4. Finalizar Compra\n");
-        printf("5. Cancelar e Sair\n");
+        printf("5. Cancelar compra (esvaziar o carrinho)\n");
+        printf("6. Salvar e voltar (manter os itens no carrinho)\n");
         printf("Escolha: ");
         scanf("%d", &opcao);
 
@@ -111,6 +114,7 @@ void iniciar_modo_compra(produto *estoque){
 
                     limpar_carrinho(carrinho);
                     carrinho = NULL;
+                    comprador->carrinho = NULL;
                     
                     return; 
                 }
@@ -123,12 +127,16 @@ void iniciar_modo_compra(produto *estoque){
 
                     limpar_carrinho(carrinho);
                     carrinho = NULL;
+                    comprador->carrinho = NULL;
                 }
                 printf("Compra cancelada.\n");
                 return;
+            
+            case 6:
+                printf("Salvando seu carrinho para mais tarde.\n");
+                comprador->carrinho = (void*) carrinho;
         }
 
-
-    }while (opcao != 5);
+    }while (opcao != 6);
 
 }
