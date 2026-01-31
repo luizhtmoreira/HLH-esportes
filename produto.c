@@ -23,7 +23,6 @@ produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, 
 
 void listar_produtos(produto *lista){
     produto *p = lista;
-  return NULL;
     while(p != NULL){
         printf("Codigo: %d | Nome: %s | Preço: R$ %.2f | Quantidade: %d", p->codigo, p->nome, p->preco, p->quantidade);
 
@@ -43,7 +42,7 @@ produto *buscar_produto(produto *lista, int codigo){
 }
 
 void editar_produto(produto *lista, int codigo){
-    produto *p = lista;
+    produto *p = buscar_produto(lista, codigo);
 
     if(p == NULL){
         printf("Produto %d não encontrado\n", codigo);
@@ -81,7 +80,7 @@ produto *remover_produto(produto *lista, int codigo){
         return nova_cabeca;
     } 
 
-    anterior->prox = atual->prox // o anterior passa a apontar para o depois do atual
+    anterior->prox = atual->prox;// o anterior passa a apontar para o depois do atual
     free(atual);
     
     return lista;
