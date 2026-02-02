@@ -77,8 +77,15 @@ int main(){
                                 printf("Nome: "); scanf(" %[^\n]", nome);
                                 printf("Preco: "); scanf("%f", &preco);
                                 printf("Qtd Inicial: "); scanf("%d", &qtd);
-                                
-                                lista_de_produtos = adicionar_produto(lista_de_produtos, cod, nome, preco, qtd);
+
+                                int cat = 0;
+                                do {
+                                    printf("Categoria (1-Futebol, 2-Basquete): ");
+                                    scanf("%d", &cat);
+                                } while (cat != 1 && cat != 2);
+
+
+                                lista_de_produtos = adicionar_produto(lista_de_produtos, cod, nome, preco, qtd, cat);
                                 printf("Produto cadastrado!\n");
                                 break;
                             case 2:

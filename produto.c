@@ -3,7 +3,7 @@
 #include <string.h>
 #include "produto.h"
 
-produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, int quantidade){
+produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, int quantidade, int categoria){
     produto *novo_produto = (produto*) malloc(sizeof(produto));
 
     if (novo_produto == NULL){
@@ -14,6 +14,7 @@ produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, 
     novo_produto->codigo = codigo;
     novo_produto->preco = preco;
     novo_produto->quantidade = quantidade;
+    novo_produto->categoria = categoria;
     strcpy(novo_produto->nome, nome);
 
     novo_produto->prox = lista;
@@ -22,10 +23,26 @@ produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, 
 }
 
 void listar_produtos(produto *lista){
+    if (lista == NULL){
+        printf("lista vazia!\n");
+        return;
+    }
+
+    printf("\n========= FUTEBOL =========\n");
     produto *p = lista;
     while(p != NULL){
-        printf("Codigo: %d | Nome: %s | Preço: R$ %.2f | Quantidade: %d\n", p->codigo, p->nome, p->preco, p->quantidade);
+        if (p->categoria == 1){
+            printf("Cod: %d | %s | R$ %.2f | Qtd: %d\n", p->codigo, p->nome, p->preco, p->quantidade);
+        }
+        p = p->prox;
+    }
 
+    printf("\n========= BASQUETE =========\n");
+    p = lista;
+    while(p != NULL){
+        if (p -> categoria == 2){
+            printf("Cod: %d | %s | R$%.2f | Qtd: %d\n", p->codigo, p->nome, p->preco, p->quantidade);
+        }
         p = p->prox;
     }
 }

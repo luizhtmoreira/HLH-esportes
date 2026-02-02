@@ -82,7 +82,7 @@ void iniciar_modo_compra(produto *estoque, cliente *comprador){
                     }
                     else{
                         //o carrinho é uma lista de produtos, então podemos usar as mesmas funções de produto
-                        carrinho = adicionar_produto(carrinho, item_no_estoque->codigo, item_no_estoque->nome, item_no_estoque->preco, qtd_desejada);
+                        carrinho = adicionar_produto(carrinho, item_no_estoque->codigo, item_no_estoque->nome, item_no_estoque->preco, qtd_desejada, item_no_estoque->categoria);
 
                         item_no_estoque->quantidade -= qtd_desejada; //dá baixa no estoque
                         printf("Produto adicionado ao carrinho\n");                    
