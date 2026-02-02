@@ -62,6 +62,10 @@ void iniciar_modo_compra(produto *estoque, cliente *comprador){
                 break;
 
             case 2:
+                printf("\n--- CONSULTE A LISTA DE PRODUTOS ---\n");
+                listar_produtos(estoque); 
+                printf("----------------------------------------\n");
+                
                 printf("Digite o código do produto: ");
                 scanf("%d", &codigo_digitado);
 
