@@ -1,12 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <locale.h>
 
 #include "cliente.h"
 #include "produto.h"
 #include "modo_compra.h"
 
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+
 int main(){
+    #ifdef _WIN32
+        SetConsoleOutputCP(65001);
+    #else
+        setlocale(LC_ALL, "C.UTF-8");
+    #endif
+
     cliente *lista_de_clientes = inicializar_lista_cliente();
     produto * lista_de_produtos = NULL;
     
