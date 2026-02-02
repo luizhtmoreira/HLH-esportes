@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "cliente.h"
 #include "produto.h"
@@ -49,7 +50,30 @@ int main(){
 
                         switch(op_prod){
                             case 1:
-                                printf("Codigo: "); scanf("%d", &cod);
+
+                                char buffer_cod[50];
+                                int cod_valido = 0;
+
+                                do {
+                                    printf("Codigo: ");
+                                    scanf(" %s", buffer_cod);
+
+                                    cod_valido = 1;
+                                    for (int i=0; buffer_cod[i] != '\0'; i++){
+                                        if (!isdigit(buffer_cod[i])){
+                                            cod_valido = 0;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if(!cod_valido){
+                                        printf("Erro: O codigo deve conter APENAS inteiros positivos. Tente novamente.\n");
+                                    }
+
+                                }while(!cod_valido);
+
+                                cod = atoi(buffer_cod);
+
                                 printf("Nome: "); scanf(" %[^\n]", nome);
                                 printf("Preco: "); scanf("%f", &preco);
                                 printf("Qtd Inicial: "); scanf("%d", &qtd);
