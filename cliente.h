@@ -18,6 +18,8 @@ typedef struct Cliente{
 
 void menu_clientes(cliente **inicio);
 
+int validar_cpf(char *cpf);
+
 cliente* criar_cliente();
 
 void cadastrar_cliente(cliente **inicio);

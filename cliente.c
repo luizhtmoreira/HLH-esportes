@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "cliente.h"
 #include "produto.h"
@@ -14,6 +15,7 @@ void menu_clientes(cliente **inicio){
         printf("3. Buscar por CPF\n");
         printf("4. Editar Cliente\n");
         printf("5. Remover Cliente\n");
+        printf("6. Ver histórico de cliente\n");
         printf("0. Voltar\n");
         printf("Escolha: ");
         scanf("%d", &opcao);
@@ -49,6 +51,54 @@ void menu_clientes(cliente **inicio){
     } while (opcao != 0);
 }
 
+int validar_cpf(char *cpf){
+    if (strlen(cpf) != 11){
+        return 0;
+    }
+
+    for (int i = 0; i < 11; i++){
+        if (!isdigit(cpf[i])){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int validar_telefone(char *telefone){
+    int tam = strlen(telefone);
+    if (strlen(telefone) != 11 && strlen(telefone) != 10){
+        return 0;
+    }
+
+    for (int i = 0; i < tam; i++){
+        if (!isdigit(telefone[i])){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int validar_data(char *data){
+    if (strlen(data) != 10){
+        return 0;
+    }
+
+    if (data[2] != '/' || data[5] != '/'){
+        return 0;
+    }
+
+    for (int i = 0; i < 10; i++){
+        if (i == 2 || i == 5){
+            continue;
+        }
+
+        if (!isdigit(data[i])){
+            return 0;
+        }
+    }
+    return 1;
+}
+
 
 cliente* criar_cliente(){
     cliente *novo_cliente = (cliente*) malloc(sizeof(cliente));
@@ -65,17 +115,46 @@ cliente* criar_cliente(){
     printf("NOME: ");
     scanf(" %[^\n]", novo_cliente->nome);
 
-    printf("CPF: ");
-    scanf(" %[^\n]", novo_cliente->CPF);
+    int cpf_valido = 0;
+    do {
+        printf("CPF (Apenas 11 numeros): ");
+        scanf(" %[^\n]", novo_cliente->CPF);
+
+        if (validar_cpf(novo_cliente->CPF)){
+            cpf_valido = 1;
+        } else {
+            printf(">> ERRO: CPF inválido! Digite exatamente 11 numeros.\n");
+        }
+    } while (cpf_valido == 0);
 
     printf("EMAIL: ");
     scanf(" %[^\n]", novo_cliente->email);
 
-    printf("TELEFONE: ");
-    scanf(" %[^\n]", novo_cliente->telefone);
+    int telefone_valido = 0;
+    do {
+        printf("Numero (DDD + Telefone): ");
+        scanf(" %[^\n]", novo_cliente->telefone);
 
-    printf("DATA DE NASCIMENTO (DD/MM/AAAA): ");
-    scanf(" %[^\n]", novo_cliente->data_de_nascimento);
+        if (validar_telefone(novo_cliente->telefone)){
+            telefone_valido = 1;
+        } else {
+            printf(">> ERRO: Telefone inválido! Digite exatamente 11 numeros.\n");
+        }
+    } while (telefone_valido == 0);
+
+
+    int data_valida = 0;
+    do {
+        printf("DATA DE NASCIMENTO (DD/MM/AAAA): ");
+        scanf(" %[^\n]", novo_cliente->data_de_nascimento);
+
+        if (validar_data(novo_cliente->data_de_nascimento)){
+            data_valida = 1;
+        } else {
+            printf(">> ERRO: Formato invalido ! (XX/XX/XXXX).\n");
+        }
+
+    } while (data_valida == 0);
 
     novo_cliente->prox = NULL;
     novo_cliente->carrinho = NULL;
@@ -121,8 +200,15 @@ void listar_clientes(cliente *inicio){
     cliente *atual = inicio; //var auxiliar p nao perder o inicio
 
     while(atual != NULL){
-        printf("Nome: %s | CPF: %s\n", atual->nome, atual->CPF);
-        printf("Email: %s | Telefone: %s\n", atual->email, atual->telefone);
+        printf("Nome: %s | CPF: %.3s.%.3s.%.3s-%.2s\n", atual->nome, atual->CPF, atual->CPF + 3, atual->CPF +6, atual->CPF + 9);
+        
+        int tam_tel = strlen(atual->telefone);
+        
+        if (tam_tel == 11){
+            printf("Email: %s | Telefone: (%.2s) %.5s-%.4s\n", atual->email, atual->telefone, atual ->telefone +2, atual->telefone +7);
+        } else {
+            printf("Email: %s | Telefone: (%.2s) %.4s-%.4s\n", atual -> email, atual->telefone, atual->telefone + 2, atual->telefone+6);
+        }
         printf("--------------------------------------------------\n");
 
         atual = atual->prox;
