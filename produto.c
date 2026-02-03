@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "produto.h"
+#include "banco.h"
 
 produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, int quantidade, int categoria){
     produto *novo_produto = (produto*) malloc(sizeof(produto));
@@ -18,7 +20,7 @@ produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, 
     strcpy(novo_produto->nome, nome);
 
     novo_produto->prox = lista;
-
+    salvar_produto_sql(novo_produto);
     return novo_produto;
 }
 
@@ -66,6 +68,8 @@ void editar_produto(produto *lista, int codigo){
         return;
     }
 
+    int codigo_velho = p->codigo;
+
     printf("Editando: %s (Preço atual: %.2f | Quantidade: %d)", p->nome, p->preco, p->quantidade);
 
     printf("Digite o novo preço: ");
@@ -75,6 +79,7 @@ void editar_produto(produto *lista, int codigo){
     scanf("%d", &p->quantidade);
 
     printf("Dados atualizados com sucesso!\n");
+    atualizar_produto_sql(p, codigo_velho);
 }
 
 produto *remover_produto(produto *lista, int codigo){
@@ -93,11 +98,13 @@ produto *remover_produto(produto *lista, int codigo){
 
     if (anterior == NULL){ // já é o primeiro
         produto *nova_cabeca = atual->prox;
+        remover_produto_sql(codigo);
         free(atual);
         return nova_cabeca;
     } 
 
     anterior->prox = atual->prox;// o anterior passa a apontar para o depois do atual
+    remover_produto_sql(codigo);
     free(atual);
     
     return lista;

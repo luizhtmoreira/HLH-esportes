@@ -6,6 +6,7 @@
 #include "cliente.h"
 #include "produto.h"
 #include "modo_compra.h"
+#include "banco.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -18,9 +19,10 @@ int main(){
         setlocale(LC_ALL, "C.UTF-8");
     #endif
 
-    cliente *lista_de_clientes = inicializar_lista_cliente();
-    produto * lista_de_produtos = NULL;
-    
+    inicializar_banco();
+    produto *lista_de_produtos = carregar_produtos_do_sql();
+    cliente *lista_de_clientes = carregar_clientes_do_sql();
+
     int opcao;
 
     do{
@@ -28,6 +30,7 @@ int main(){
         printf("1. Gestão dos Clientes\n");
         printf("2. Gestão dos Produtos\n");
         printf("3. Modo Compra\n");
+        printf("4. Histórico Geral de Vendas\n");
         printf("0. Sair\n");
 
         printf("\nEscolha uma opção: ");
@@ -133,6 +136,10 @@ int main(){
                 }
                 break;
 
+            case 4:
+                listar_historico_geral_sql();
+                break;
+            
             default:
                 printf("\nOpcao invalida! Tente novamente.\n");
         }

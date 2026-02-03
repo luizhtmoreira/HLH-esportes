@@ -5,6 +5,7 @@
 
 #include "cliente.h"
 #include "produto.h"
+#include "banco.h"
 
 void menu_clientes(cliente **inicio){
     int opcao;
@@ -43,6 +44,15 @@ void menu_clientes(cliente **inicio){
             case 5:
                 remover_cliente(inicio);
                 break;
+            case 6:
+            {
+                char cpf_busca[15];
+                printf("Digite o CPF do cliente para ver o histórico: ");
+                scanf(" %[^\n]", cpf_busca);
+                listar_historico_cliente_sql(cpf_busca);
+            }
+            break;
+                
             case 0:
                 break;
             default:
@@ -183,6 +193,7 @@ void cadastrar_cliente(cliente **inicio){
     }
 
     printf("\n--- Cliente %s cadastrado(a) com sucesso! ---\n", novo_cliente->nome);
+    salvar_cliente_sql(novo_cliente);
 }
 
 cliente* inicializar_lista_cliente(){
@@ -240,6 +251,9 @@ void editar_cliente(cliente *inicio){
         return;
     }
 
+    char cpf_velho[14];
+    strcpy(cpf_velho, encontrado->CPF);
+
     printf("\nEditando dados de: %s", encontrado->nome);
     char r;
 
@@ -284,6 +298,7 @@ void editar_cliente(cliente *inicio){
     }
 
     printf("\n--- Edicao concluida! ---\n");
+    atualizar_cliente_sql(encontrado, cpf_velho);
 }
 
 void ver_carrinho_cliente(cliente *c){
@@ -348,6 +363,7 @@ void remover_cliente(cliente **inicio){
         anterior->prox = atual->prox; //anterior aponta p prox;
     }
 
+    remover_cliente_sql(cpf_deletado);
     limpar_carrinho_cliente(atual);
     free(atual);
     printf("--- Cliente removido com sucesso ---");

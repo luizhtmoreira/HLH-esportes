@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #include "modo_compra.h"
 #include "produto.h"
 #include "cliente.h"
+#include "banco.h"
 
 float calcular_total_carrinho(produto *carrinho){
     float total = 0;
@@ -114,8 +116,14 @@ void iniciar_modo_compra(produto *estoque, cliente *comprador){
                     listar_produtos(carrinho);
                     printf("====================\n");
                     printf("TOTAL A PAGAR: R$ %.2f\n", total);
+                    salvar_venda_sql(comprador->CPF, comprador->nome, carrinho);
+                    produto *p_temp = carrinho;
+                    while(p_temp != NULL){
+                        produto *original = buscar_produto(estoque, p_temp->codigo);
+                        if(original) atualizar_produto_sql(original, original->codigo);
+                        p_temp = p_temp->prox;
+                    }
                     printf("Obrigado pela compra!\n");
-
                     limpar_carrinho(carrinho);
                     carrinho = NULL;
                     comprador->carrinho = NULL;
