@@ -6,6 +6,7 @@
 #include "cliente.h"
 #include "produto.h"
 #include "modo_compra.h"
+#include "banco.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -18,9 +19,14 @@ int main(){
         setlocale(LC_ALL, "C.UTF-8");
     #endif
 
-    cliente *lista_de_clientes = inicializar_lista_cliente();
-    produto * lista_de_produtos = NULL;
+
+    inicializar_banco();
     
+
+    produto *lista_de_produtos = carregar_produtos_do_sql();
+    cliente *lista_de_clientes = carregar_clientes_do_sql();
+ 
+
     int opcao;
 
     do{
@@ -28,6 +34,7 @@ int main(){
         printf("1. Gestão dos Clientes\n");
         printf("2. Gestão dos Produtos\n");
         printf("3. Modo Compra\n");
+        printf("4. Histórico Geral de Vendas\n"); 
         printf("0. Sair\n");
 
         printf("\nEscolha uma opção: ");
@@ -42,7 +49,7 @@ int main(){
                 menu_clientes(&lista_de_clientes);
                 break;
 
-            case 2:
+            case 2: 
                 {
                     int op_prod;
                     do{
@@ -59,16 +66,17 @@ int main(){
                         float preco;
                         char nome[50];  
 
+                        
                         char buffer_cod[50];
                         int cod_valido = 0;
 
                         switch(op_prod){
-                            case 1:
-
+                            case 1: 
                                 do {
-                                    printf("Codigo: ");
+                                    printf("Codigo (Unico): ");
                                     scanf(" %s", buffer_cod);
 
+                                    
                                     cod_valido = 1;
                                     for (int i=0; buffer_cod[i] != '\0'; i++){
                                         if (!isdigit(buffer_cod[i])){
@@ -78,18 +86,19 @@ int main(){
                                     }
                                     
                                     if(!cod_valido){
-                                        printf("Erro: O codigo deve conter APENAS inteiros positivos. Tente novamente.\n");
+                                        printf("Erro: O codigo deve conter APENAS inteiros positivos.\n");
                                         continue;
                                     }
 
                                     cod = atoi(buffer_cod);
 
+                                    
                                     if (buscar_produto(lista_de_produtos, cod) != NULL) {
-                                        printf(">> ERRO: O codigo %d ja esta em uso por outro produto!\n", cod);
+                                        printf(">> ERRO: O codigo %d ja esta em uso!\n", cod);
                                         cod_valido = 0; 
                                     }
 
-                                }while(!cod_valido);
+                                } while(!cod_valido);
 
                                 printf("Nome: "); scanf(" %[^\n]", nome);
                                 printf("Preco: "); scanf("%f", &preco);
@@ -101,15 +110,16 @@ int main(){
                                     scanf("%d", &cat);
                                 } while (cat != 1 && cat != 2);
 
-
                                 lista_de_produtos = adicionar_produto(lista_de_produtos, cod, nome, preco, qtd, cat);
                                 printf("Produto cadastrado!\n");
                                 break;
-                            case 2:
+
+                            case 2: 
                                 printf("\n--- ESTOQUE ATUAL ---\n");
                                 listar_produtos(lista_de_produtos);
                                 break;
-                            case 3:
+
+                            case 3: 
                                 printf("\n--- LISTA PARA EDICAO ---\n");
                                 listar_produtos(lista_de_produtos); 
                                 printf("-------------------------\n");
@@ -117,7 +127,8 @@ int main(){
                                 printf("Codigo para editar: "); scanf("%d", &cod);
                                 editar_produto(lista_de_produtos, cod);
                                 break;
-                            case 4:
+
+                            case 4: 
                                 printf("\n--- LISTA PARA REMOCAO ---\n");
                                 listar_produtos(lista_de_produtos); 
                                 printf("-------------------------\n");
@@ -126,11 +137,11 @@ int main(){
                                 lista_de_produtos = remover_produto(lista_de_produtos, cod);
                                 break;
                         }                      
-                    }while (op_prod != 0);
+                    } while (op_prod != 0);
                 }
                 break;
 
-            case 3:
+            case 3: 
                 {
                     char cpf_login[14];
                     printf("\n--- LOGIN NO CAIXA ---\n");
@@ -147,6 +158,10 @@ int main(){
                 }
                 break;
 
+            case 4: 
+                listar_historico_geral_sql();
+                break;
+            
             default:
                 printf("\nOpcao invalida! Tente novamente.\n");
         }
