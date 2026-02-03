@@ -26,19 +26,27 @@ void limpar_carrinho(produto *carrinho){
     }
 }
 
-void devolver_estoque(produto *carrinho, produto *estoque_oficial){
+void devolver_estoque(produto *carrinho, produto **estoque_ref){
     produto *p = carrinho;
     while (p != NULL){
-        produto *produto_estoque = buscar_produto(estoque_oficial, p->codigo);
+        produto *produto_estoque = buscar_produto(*estoque_ref, p->codigo);
 
-        if(produto_estoque != NULL) produto_estoque -> quantidade += p->quantidade;
+        if(produto_estoque != NULL){
+            produto_estoque -> quantidade += p->quantidade;
+            atualizar_produto_sql(produto_estoque, produto_estoque->codigo);
+        }
+        else{
+            printf(">> Recriando produto %s ao estoque...\n", p->nome);
+
+            *estoque_ref = adicionar_produto(*estoque_ref, p->codigo, p->nome, p->preco, p->quantidade, p->categoria);
+        }
     
         p = p->prox;
     }
 
 }
 
-void iniciar_modo_compra(produto *estoque, cliente *comprador){
+void iniciar_modo_compra(produto **estoque, cliente *comprador){
 
     produto *carrinho = (produto*) comprador->carrinho; //inicia carrinho como uma lista vazia
 
@@ -60,18 +68,18 @@ void iniciar_modo_compra(produto *estoque, cliente *comprador){
         switch(opcao){
             case 1:
                 printf("\n--- Produtos Disponíveis---\n");
-                listar_produtos(estoque);
+                listar_produtos(*estoque);
                 break;
 
             case 2:
                 printf("\n--- CONSULTE A LISTA DE PRODUTOS ---\n");
-                listar_produtos(estoque); 
+                listar_produtos(*estoque); 
                 printf("----------------------------------------\n");
                 
                 printf("Digite o código do produto: ");
                 scanf("%d", &codigo_digitado);
 
-                produto *item_no_estoque = buscar_produto(estoque, codigo_digitado);
+                produto *item_no_estoque = buscar_produto(*estoque, codigo_digitado);
 
                 if(item_no_estoque == NULL){
                     printf("Produto não encontrado");
@@ -91,7 +99,9 @@ void iniciar_modo_compra(produto *estoque, cliente *comprador){
                         carrinho = adicionar_produto(carrinho, item_no_estoque->codigo, item_no_estoque->nome, item_no_estoque->preco, qtd_desejada, item_no_estoque->categoria);
 
                         item_no_estoque->quantidade -= qtd_desejada; //dá baixa no estoque
-                        printf("Produto adicionado ao carrinho\n");                    
+                        printf("Produto adicionado ao carrinho\n"); 
+
+                        if(item_no_estoque->quantidade == 0) *estoque = remover_produto(*estoque, item_no_estoque->codigo);                  
                     }
                 }
                 break;
@@ -116,13 +126,18 @@ void iniciar_modo_compra(produto *estoque, cliente *comprador){
                     listar_produtos(carrinho);
                     printf("====================\n");
                     printf("TOTAL A PAGAR: R$ %.2f\n", total);
+
                     salvar_venda_sql(comprador->CPF, comprador->nome, carrinho);
+
                     produto *p_temp = carrinho;
                     while(p_temp != NULL){
-                        produto *original = buscar_produto(estoque, p_temp->codigo);
+                        produto *original = buscar_produto(*estoque, p_temp->codigo);
+
                         if(original) atualizar_produto_sql(original, original->codigo);
+
                         p_temp = p_temp->prox;
                     }
+                    
                     printf("Obrigado pela compra!\n");
                     limpar_carrinho(carrinho);
                     carrinho = NULL;

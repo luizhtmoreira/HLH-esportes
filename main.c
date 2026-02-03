@@ -153,7 +153,7 @@ int main(){
                     if (cliente_atual == NULL) {
                         printf("ERRO: Cliente nao encontrado. Cadastre-o no menu 1 antes de comprar.\n");
                     } else {
-                        iniciar_modo_compra(lista_de_produtos, cliente_atual);
+                        iniciar_modo_compra(&lista_de_produtos, cliente_atual);
                     }
                 }
                 break;
