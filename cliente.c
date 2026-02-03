@@ -18,7 +18,8 @@ void menu_clientes(cliente **inicio){
         printf("5. Remover Cliente\n");
         printf("6. Ver histórico de cliente\n");
         printf("0. Voltar\n");
-        printf("Escolha: ");
+
+        printf("\nEscolha uma opção: ");
         scanf("%d", &opcao);
 
         switch(opcao) {
@@ -31,11 +32,23 @@ void menu_clientes(cliente **inicio){
             case 3: 
                 {
                     char cpf[14];
-                    printf("CPF: ");
+                    printf("\nDigite o CPF desejado: ");
                     scanf(" %[^\n]", cpf);
                     cliente *res = buscar_cliente(*inicio, cpf);
-                    if(res) printf("Encontrado: %s\n", res->nome);
-                    else printf("Nao encontrado.\n");
+                    if(res){
+                        printf("--------------------------------------------------\n");
+                        printf("Cliente encontrado!\n");
+                        printf("Nome: %s | CPF: %.3s.%.3s.%.3s-%.2s\n", res->nome, res->CPF, res->CPF + 3, res->CPF +6, res->CPF + 9);
+                        int tam_tel = strlen(res->telefone);
+                        if (tam_tel == 11){
+                            printf("Email: %s | Telefone: (%.2s) %.5s-%.4s\n", res->email, res->telefone, res ->telefone +2, res->telefone +7);
+                        } else {
+                            printf("Email: %s | Telefone: (%.2s) %.4s-%.4s\n", res -> email, res->telefone, res->telefone + 2, res->telefone+6);
+                        }
+                        printf("--------------------------------------------------\n");
+                    } else{
+                        printf("Cliente não encontrado!\n");
+                    }
                 }
                 break;
             case 4:
@@ -47,9 +60,14 @@ void menu_clientes(cliente **inicio){
             case 6:
             {
                 char cpf_busca[15];
-                printf("Digite o CPF do cliente para ver o histórico: ");
+                printf("Digite o CPF do cliente que deseja ver o histórico: ");
                 scanf(" %[^\n]", cpf_busca);
-                listar_historico_cliente_sql(cpf_busca);
+                cliente *c = buscar_cliente(*inicio, cpf_busca);
+                if (c == NULL){
+                    printf("\n>> ERRO: CPF %s não encontrado no cadastro.\n", cpf_busca);
+                } else {
+                    listar_historico_cliente_sql(cpf_busca, c->nome);
+                }  
             }
             break;
                 
@@ -241,7 +259,7 @@ cliente* buscar_cliente(cliente *inicio, char *cpf_busca){
 void editar_cliente(cliente *inicio){
     char cpf_busca[14];
     printf("\n--- EDITAR CADASTRO COMPLETO ---\n");
-    printf("Digite o CPF ATUAL do cliente para encontrar: ");
+    printf("Digite o CPF ATUAL do cliente que deseja editar: ");
     scanf(" %[^\n]", cpf_busca);
 
     cliente *encontrado = buscar_cliente(inicio, cpf_busca);
@@ -254,7 +272,7 @@ void editar_cliente(cliente *inicio){
     char cpf_velho[14];
     strcpy(cpf_velho, encontrado->CPF);
 
-    printf("\nEditando dados de: %s", encontrado->nome);
+    printf("\nCliente encontrado, editando dados de: %s", encontrado->nome);
     char r;
 
     printf("\nDeseja editar o NOME ? (S/N): ");
@@ -341,7 +359,8 @@ void limpar_carrinho_cliente(cliente *c){
 void remover_cliente(cliente **inicio){
     char cpf_deletado[14];
     printf("\n--- REMOVER CLIENTE ---\n");
-    printf("Digite o CPF para remover: ");
+    listar_clientes(*inicio);
+    printf("Digite o CPF do cliente que deseja remover: ");
     scanf(" %[^\n]", cpf_deletado);
 
     cliente *anterior = NULL;
@@ -366,5 +385,5 @@ void remover_cliente(cliente **inicio){
     remover_cliente_sql(cpf_deletado);
     limpar_carrinho_cliente(atual);
     free(atual);
-    printf("--- Cliente removido com sucesso ---");
+    printf("--- Cliente removido com sucesso ---\n");
 }

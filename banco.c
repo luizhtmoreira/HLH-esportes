@@ -26,7 +26,7 @@ void inicializar_banco(){
                 "produto_nome TEXT NOT NULL, "
                 "qtd INTEGER, "
                 "total REAL, "
-                "data_hora DATETIME DEFAULT CURRENT_TIMESTAMP);";
+                "data_hora DATETIME DEFAULT (datetime('now', 'localtime')));";
     sqlite3_exec(db, sql_vendas, 0, 0, &erro);
 
     char *sql_prod = "CREATE TABLE IF NOT EXISTS produtos ("
@@ -118,7 +118,7 @@ void listar_historico_geral_sql(){
     sqlite3_close(db);
 }
 
-void listar_historico_cliente_sql(char *cpf_busca){
+void listar_historico_cliente_sql(char *cpf_busca, char *nome_cliente){
     sqlite3 *db;
     sqlite3_stmt *res;
 
@@ -129,15 +129,22 @@ void listar_historico_cliente_sql(char *cpf_busca){
     sqlite3_prepare_v2(db, sql, -1, &res, 0);
     sqlite3_bind_text(res, 1, cpf_busca, -1, SQLITE_STATIC);
 
-    printf("\n=== HISTORICO DO CLIENTE %s ===\n", cpf_busca);
+    printf("\n=== HISTORICO DO CLIENTE %s ===\n", nome_cliente);
+    printf("(CPF: %s)\n", cpf_busca);
 
+    int encontrou_venda = 0;
     while (sqlite3_step(res) == SQLITE_ROW) {
         imprimir_linha_sql(res); 
+        encontrou_venda = 1;
     }
+
+    if (!encontrou_venda) {
+        printf(">> Este cliente ainda não realizou nenhuma compra.\n");
+    }
+    printf("==========================================\n");
 
     sqlite3_finalize(res); 
     sqlite3_close(db);
-
 }
 
 void salvar_produto_sql(produto *p){

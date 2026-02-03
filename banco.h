@@ -9,7 +9,7 @@ void inicializar_banco();
 
 void salvar_venda_sql(char *cpf, char *nome_cliente, produto *carrinho);
 void listar_historico_geral_sql();
-void listar_historico_cliente_sql(char *cpf_busca);
+void listar_historico_cliente_sql(char *cpf_busca, char *nome_cliente);
 
 produto* carregar_produtos_do_sql();
 void salvar_produto_sql(produto *p);
