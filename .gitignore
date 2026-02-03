@@ -57,3 +57,4 @@ dkms.conf
 #database
 *.db
 loja_database.db
+todos_os_codigos.txt
