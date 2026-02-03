@@ -26,26 +26,52 @@ produto *adicionar_produto(produto *lista, int codigo, char *nome, float preco, 
 
 void listar_produtos(produto *lista){
     if (lista == NULL){
-        printf("lista vazia!\n");
+        printf("\n>> O estoque esta vazio!\n");
         return;
     }
 
-    printf("\n========= FUTEBOL =========\n");
+    int tem_futebol = 0; // verifica se há algum produto da categoria futebol
     produto *p = lista;
     while(p != NULL){
-        if (p->categoria == 1){
-            printf("Cod: %d | %s | R$ %.2f | Qtd: %d\n", p->codigo, p->nome, p->preco, p->quantidade);
+        if(p->categoria == 1) {
+            tem_futebol = 1;
+            break; // já achamos um, não precisa ver o resto
         }
         p = p->prox;
     }
 
-    printf("\n========= BASQUETE =========\n");
+    // se tiver, imprime o cabeçalho e os itens
+    if (tem_futebol) {
+        printf("\n========= FUTEBOL =========\n");
+        p = lista; // Reinicia o ponteiro
+        while(p != NULL){
+            if (p->categoria == 1){
+                printf("Cod: %d | %s | R$ %.2f | Qtd: %d\n", p->codigo, p->nome, p->preco, p->quantidade);
+            }
+            p = p->prox;
+        }
+    }
+
+    // mesma lógica
+    int tem_basquete = 0;
     p = lista;
     while(p != NULL){
-        if (p -> categoria == 2){
-            printf("Cod: %d | %s | R$%.2f | Qtd: %d\n", p->codigo, p->nome, p->preco, p->quantidade);
+        if(p->categoria == 2) {
+            tem_basquete = 1;
+            break;
         }
         p = p->prox;
+    }
+
+    if (tem_basquete) {
+        printf("\n========= BASQUETE =========\n");
+        p = lista;
+        while(p != NULL){
+            if (p->categoria == 2){
+                printf("Cod: %d | %s | R$ %.2f | Qtd: %d\n", p->codigo, p->nome, p->preco, p->quantidade);
+            }
+            p = p->prox;
+        }
     }
 }
 

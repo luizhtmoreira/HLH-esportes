@@ -6,7 +6,6 @@
 #include "cliente.h"
 #include "produto.h"
 #include "modo_compra.h"
-#include "banco.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -19,10 +18,9 @@ int main(){
         setlocale(LC_ALL, "C.UTF-8");
     #endif
 
-    inicializar_banco();
-    produto *lista_de_produtos = carregar_produtos_do_sql();
-    cliente *lista_de_clientes = carregar_clientes_do_sql();
-
+    cliente *lista_de_clientes = inicializar_lista_cliente();
+    produto * lista_de_produtos = NULL;
+    
     int opcao;
 
     do{
@@ -30,15 +28,10 @@ int main(){
         printf("1. Gestão dos Clientes\n");
         printf("2. Gestão dos Produtos\n");
         printf("3. Modo Compra\n");
-        printf("4. Histórico Geral de Vendas\n");
         printf("0. Sair\n");
 
         printf("\nEscolha uma opção: ");
-        opcao = -1;
-        
-        if(scanf("%d", &opcao) != 1) {
-            while(getchar() != '\n'); 
-        }
+        scanf("%d", &opcao);
 
         switch(opcao){
             case 0:
@@ -66,11 +59,11 @@ int main(){
                         float preco;
                         char nome[50];  
 
+                        char buffer_cod[50];
+                        int cod_valido = 0;
+
                         switch(op_prod){
                             case 1:
-
-                                char buffer_cod[50];
-                                int cod_valido = 0;
 
                                 do {
                                     printf("Codigo: ");
@@ -86,11 +79,17 @@ int main(){
                                     
                                     if(!cod_valido){
                                         printf("Erro: O codigo deve conter APENAS inteiros positivos. Tente novamente.\n");
+                                        continue;
+                                    }
+
+                                    cod = atoi(buffer_cod);
+
+                                    if (buscar_produto(lista_de_produtos, cod) != NULL) {
+                                        printf(">> ERRO: O codigo %d ja esta em uso por outro produto!\n", cod);
+                                        cod_valido = 0; 
                                     }
 
                                 }while(!cod_valido);
-
-                                cod = atoi(buffer_cod);
 
                                 printf("Nome: "); scanf(" %[^\n]", nome);
                                 printf("Preco: "); scanf("%f", &preco);
@@ -107,14 +106,22 @@ int main(){
                                 printf("Produto cadastrado!\n");
                                 break;
                             case 2:
-                                printf("\n--- Estoque Atual ---\n");
+                                printf("\n--- ESTOQUE ATUAL ---\n");
                                 listar_produtos(lista_de_produtos);
                                 break;
                             case 3:
+                                printf("\n--- LISTA PARA EDICAO ---\n");
+                                listar_produtos(lista_de_produtos); 
+                                printf("-------------------------\n");
+
                                 printf("Codigo para editar: "); scanf("%d", &cod);
                                 editar_produto(lista_de_produtos, cod);
                                 break;
                             case 4:
+                                printf("\n--- LISTA PARA REMOCAO ---\n");
+                                listar_produtos(lista_de_produtos); 
+                                printf("-------------------------\n");
+
                                 printf("Codigo para remover: "); scanf("%d", &cod);
                                 lista_de_produtos = remover_produto(lista_de_produtos, cod);
                                 break;
@@ -140,10 +147,6 @@ int main(){
                 }
                 break;
 
-            case 4:
-                listar_historico_geral_sql();
-                break;
-            
             default:
                 printf("\nOpcao invalida! Tente novamente.\n");
         }
