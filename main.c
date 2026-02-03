@@ -34,7 +34,11 @@ int main(){
         printf("0. Sair\n");
 
         printf("\nEscolha uma opção: ");
-        scanf("%d", &opcao);
+        opcao = -1;
+        
+        if(scanf("%d", &opcao) != 1) {
+            while(getchar() != '\n'); 
+        }
 
         switch(opcao){
             case 0:

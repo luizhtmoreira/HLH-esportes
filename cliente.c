@@ -20,7 +20,11 @@ void menu_clientes(cliente **inicio){
         printf("0. Voltar\n");
 
         printf("\nEscolha uma opção: ");
-        scanf("%d", &opcao);
+        opcao = -1; 
+    
+        if (scanf("%d", &opcao) != 1) {
+            while(getchar() != '\n'); 
+        }
 
         switch(opcao) {
             case 1: 
