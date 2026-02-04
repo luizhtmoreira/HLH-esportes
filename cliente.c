@@ -392,28 +392,6 @@ void editar_cliente(cliente *inicio){
     atualizar_cliente_sql(encontrado, cpf_velho);
 }
 
-void ver_carrinho_cliente(cliente *c){
-    if (c->carrinho == NULL){
-        printf("\nCarrinho vazio.\n");
-        return;
-    }
-
-    printf("\n--- CARRINHO DE %s ---\n", c->nome);
-
-    produto *p = (produto*) c->carrinho;
-    float total = 0;
-
-    while (p != NULL){
-        float sub = p-> preco * p->quantidade;
-        printf("- %dx %s (R$ %.2f) = R$ %.2f\n", p->quantidade, p->nome, p->preco, sub);
-        total += sub;
-        p = p->prox;
-    }
-    printf("-------------------------\n");
-    printf("TOTAL: R$ %.2f\n", total);
-
-}
-
 void limpar_carrinho_cliente(cliente *c){
     if (c->carrinho == NULL){
         return;
