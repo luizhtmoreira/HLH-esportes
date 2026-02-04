@@ -13,6 +13,9 @@
 #endif
 
 int main(){
+
+    setvbuf(stdout, NULL, _IONBF, 0);
+    
     #ifdef _WIN32
         SetConsoleOutputCP(65001);
     #else

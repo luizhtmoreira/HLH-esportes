@@ -82,6 +82,17 @@ void menu_clientes(cliente **inicio){
         }
     } while (opcao != 0);
 }
+int validar_nome (char *nome){
+    int i = 0;
+
+    while (nome[i] != 0){
+        if (!isalpha((unsigned char)nome[i]) && nome[i] != ' '){
+            return 0;
+        }
+        i++;
+    }
+    return 1;
+}
 
 int validar_cpf(char *cpf){
     if (strlen(cpf) != 11){
@@ -144,8 +155,17 @@ cliente* criar_cliente(){
 
     while(getchar() != '\n');
 
-    printf("NOME: ");
-    scanf(" %[^\n]", novo_cliente->nome);
+    int nome_valido = 0;
+    do {
+        printf("NOME: ");
+        scanf(" %[^\n]", novo_cliente->nome);
+
+        if (validar_nome(novo_cliente->nome)){
+            nome_valido = 1;
+        } else {
+            printf(">> ERRO: Nome deve conter apenas letras e espaços.\n");
+        }
+    } while (nome_valido == 0);
 
     int cpf_valido = 0;
     do {
