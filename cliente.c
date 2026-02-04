@@ -221,6 +221,12 @@ void cadastrar_cliente(cliente **inicio){
         return;
     }
 
+    if (buscar_cliente(*inicio, novo_cliente->CPF) != NULL) {
+        printf("\n>> ERRO: CPF ja cadastrado no sistema!\n");
+        free(novo_cliente);
+        return; 
+    }
+
     if (*inicio == NULL){
         *inicio = novo_cliente;
     } 
@@ -279,6 +285,7 @@ cliente* buscar_cliente(cliente *inicio, char *cpf_busca){
 void editar_cliente(cliente *inicio){
     char cpf_busca[14];
     printf("\n--- EDITAR CADASTRO COMPLETO ---\n");
+    listar_clientes(inicio);
     printf("Digite o CPF ATUAL do cliente que deseja editar: ");
     scanf(" %[^\n]", cpf_busca);
 
@@ -289,9 +296,6 @@ void editar_cliente(cliente *inicio){
         return;
     }
 
-    char cpf_velho[14];
-    strcpy(cpf_velho, encontrado->CPF);
-
     printf("\nCliente encontrado, editando dados de: %s", encontrado->nome);
     char r;
 
@@ -299,17 +303,45 @@ void editar_cliente(cliente *inicio){
     scanf(" %c", &r);
 
     if (r == 'S' || r == 's'){
-        printf("Novo Nome: ");
-        scanf(" %[^\n]", encontrado->nome); 
+        int nome_valido = 0;
+        do{
+            printf("NOME: ");
+            scanf(" %[^\n]", encontrado->nome);
+
+            if (validar_nome(encontrado->nome)){
+            nome_valido = 1;
+
+        } else {
+            printf(">> ERRO: Nome deve conter apenas letras e espaços.\n");
+        }
+    } while (nome_valido == 0);
     }
 
     printf("\nDeseja editar o CPF? (S/N): ");
     scanf(" %c", &r); 
 
     if (r == 'S' || r == 's') {
-        printf("Novo CPF: ");
-        scanf(" %[^\n]", encontrado->CPF);
-    }
+        char novo_cpf_temp[15];
+        int cpf_valido = 0;
+        
+        do {
+            printf("Novo CPF: ");
+            scanf(" %[^\n]", novo_cpf_temp);
+            
+            if (!validar_cpf(novo_cpf_temp)) {
+                printf("Erro: Formato inválido.\n");
+                continue;
+            }
+            
+            if (strcmp(novo_cpf_temp, encontrado->CPF) != 0 && buscar_cliente(inicio, novo_cpf_temp) != NULL) {
+                printf("Erro: Este CPF ja pertence a outro cliente!\n");
+            } else {
+                cpf_valido = 1;
+                }
+            } while (cpf_valido != 1);
+            
+            strcpy(encontrado->CPF, novo_cpf_temp);
+        }
 
     printf("\nDeseja editar o EMAIL? (S/N): ");
     scanf(" %c", &r); 
@@ -323,19 +355,40 @@ void editar_cliente(cliente *inicio){
     scanf(" %c", &r); 
 
     if (r == 'S' || r == 's') {
-        printf("Novo Telefone: ");
-        scanf(" %[^\n]", encontrado->telefone);
+        int telefone_valido = 0;
+        do {
+            printf("Numero (DDD + Telefone): ");
+            scanf(" %[^\n]", encontrado->telefone);
+            
+            if (validar_telefone(encontrado->telefone)){
+                telefone_valido = 1;
+            } else {
+                printf(">> ERRO: Telefone inválido! Digite exatamente 11 numeros.\n");
+            }
+    } while (telefone_valido == 0);
     }
 
     printf("\nDeseja editar a DATA DE NASCIMENTO? (S/N): ");
     scanf(" %c", &r); 
 
     if (r == 'S' || r == 's') {
-        printf("Nova Data: ");
-        scanf(" %[^\n]", encontrado->data_de_nascimento);
+        int data_valida = 0;
+        do {
+            printf("DATA DE NASCIMENTO (DD/MM/AAAA): ");
+            scanf(" %[^\n]", encontrado->data_de_nascimento);
+            
+            if (validar_data(encontrado->data_de_nascimento)){
+                data_valida = 1;
+            } else {
+                printf(">> ERRO: Formato invalido ! (XX/XX/XXXX).\n");
+            }
+        } while (data_valida == 0);
     }
 
     printf("\n--- Edicao concluida! ---\n");
+
+    char cpf_velho[14];
+    strcpy(cpf_velho, encontrado->CPF);
     atualizar_cliente_sql(encontrado, cpf_velho);
 }
 
