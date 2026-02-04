@@ -18,21 +18,17 @@ typedef struct Cliente{
 
 void menu_clientes(cliente **inicio);
 
-int validar_cpf(char *cpf);
-
-cliente* criar_cliente();
+cliente* criar_cliente(); 
 
 void cadastrar_cliente(cliente **inicio);
 
-cliente* inicializar_lista_cliente();
+void listar_clientes(cliente *inicio);  
 
-void listar_clientes(cliente *inicio);
+cliente* buscar_cliente(cliente *inicio,                     char *cpf_busca); 
 
-cliente* buscar_cliente(cliente *inicio,                     char *cpf_busca);
+void editar_cliente(cliente *inicio); 
 
-void editar_cliente(cliente *inicio);
-
-void ver_carrinho_cliente(cliente *c);
+void ver_carrinho_cliente(cliente *c);  
 
 void remover_cliente(cliente **inicio);
 

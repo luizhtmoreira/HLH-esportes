@@ -218,10 +218,6 @@ void cadastrar_cliente(cliente **inicio){
     salvar_cliente_sql(novo_cliente);
 }
 
-cliente* inicializar_lista_cliente(){
-    return NULL;
-}
-
 void listar_clientes(cliente *inicio){
     if (inicio == NULL){
         printf("\nNenhum cliente cadastrado, a lista está vazia!\n");
