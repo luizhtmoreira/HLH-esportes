@@ -6,4 +6,6 @@
 
 void iniciar_modo_compra(produto **estoque, cliente *comprador);
 
+void limpar_carrinho(produto *carrinho);
+
 #endif

@@ -392,21 +392,6 @@ void editar_cliente(cliente *inicio){
     atualizar_cliente_sql(encontrado, cpf_velho);
 }
 
-void limpar_carrinho_cliente(cliente *c){
-    if (c->carrinho == NULL){
-        return;
-    }
-
-    produto *p = (produto*) c->carrinho;
-
-    while(p != NULL){
-        produto *temp = p;
-        p = p->prox;
-        free(temp);
-    }
-    c -> carrinho = NULL;
-}
-
 void remover_cliente(cliente **inicio){
     char cpf_deletado[14];
     printf("\n--- REMOVER CLIENTE ---\n");
@@ -434,7 +419,8 @@ void remover_cliente(cliente **inicio){
     }
 
     remover_cliente_sql(cpf_deletado);
-    limpar_carrinho_cliente(atual);
+    limpar_carrinho((produto*) atual-> carrinho);
+    atual -> carrinho = NULL;
     free(atual);
     printf("--- Cliente removido com sucesso ---\n");
 }
