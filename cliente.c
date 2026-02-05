@@ -6,6 +6,7 @@
 #include "cliente.h"
 #include "produto.h"
 #include "banco.h"
+#include "modo_compra.h"
 
 void menu_clientes(cliente **inicio){
     int opcao;
